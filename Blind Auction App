@@ -1,0 +1,46 @@
+from replit import clear
+from art import logo
+
+print(logo)
+print("Welcome to the secret auction program.")
+
+more_bidders = True
+total_bidders = []
+name = ""
+bid = ""
+
+def add_data(name_add, bid_add):
+    new_entry = {
+            "Name": name,
+            "Bid": bid
+        }
+
+    total_bidders.append(new_entry)
+    
+while more_bidders is True:
+    name = input("What is your name: ")
+    bid = int(input("What is your bid: $"))
+
+    add_data(name_add = name, bid_add = bid)
+
+    again = input("Are there any other bidders? Type 'yes' or 'no'.\n").lower()
+
+    if again == "no":
+        more_bidders = False
+
+    clear()
+    print(logo)
+
+highest_bid = 0
+
+
+for i in range(0, len(total_bidders)):
+    bid_amount = total_bidders[i]["Bid"]    
+
+    if bid_amount > highest_bid:
+        highest_bid += bid_amount         
+        final_name = total_bidders[i]["Name"]
+        final_bid = total_bidders[i]["Bid"]
+
+print(f"The highest bidder is {final_name} with the bid of ${final_bid}.")
+    
