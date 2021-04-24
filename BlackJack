@@ -1,0 +1,137 @@
+from art import logo
+from replit import clear
+import random
+
+
+cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+player_cards = []
+sum_of_player = 0
+cpu_cards = []
+sum_of_cpu = 0
+game_continue = True
+player_win = False
+player_blackjack = False
+player_bust = False
+
+
+def player_draw():
+    '''Draws a random card from the deck'''
+    global sum_of_player
+    chosen_card = random.choice(cards)
+    if chosen_card == 11:
+        ace_choice = input("You have drawn an Ace. Choose '11' or '1': ")
+        if ace_choice == "1":
+            player_cards.append(1)
+            sum_of_player = sum(player_cards)
+        else:
+            player_cards.append(chosen_card)
+            sum_of_player = sum(player_cards)
+    else:
+        player_cards.append(chosen_card)
+        sum_of_player = sum(player_cards)
+    
+def cpu_draw():
+    global sum_of_cpu
+    chosen_card = random.choice(cards) 
+    if chosen_card == 11:
+        if sum_of_cpu <= 10:
+            cpu_cards.append(chosen_card)
+            sum_of_cpu = sum(cpu_cards)
+        else:
+            cpu_cards.append(1)
+            sum_of_cpu = sum(cpu_cards) 
+    else:
+        cpu_cards.append(chosen_card)
+        sum_of_cpu = sum(cpu_cards)
+
+def starting_deal2():
+    for i in range(2):
+        player_draw()
+        cpu_draw()
+ 
+
+def compare():
+    if sum_of_player == sum_of_cpu:
+        game_continue = True
+        print("Player and Dealer draws.")
+    if sum_of_player > sum_of_cpu and sum_of_player <= 21:
+        player_win = True
+        # game_continue = False
+        print("You win!")
+    if sum_of_player < sum_of_cpu and sum_of_cpu <= 21:
+        # player_win = False
+        print("Dealer wins. You lose.")
+
+while game_continue:
+    print(logo) 
+    print("Ready to lose? Welcome to BlackJack.")
+    #Do a starting question to prompt game
+
+    starting_deal2()
+    print("")
+    print(f"Your hand is {player_cards}\nPlayer Score: {sum_of_player}\n")       
+    print(f"Dealer's Hand: {cpu_cards[0]}\n")
+
+    #2nd phase - until player is satisfied or if player busts (while loop)
+
+    keep_drawing = True
+
+    while keep_drawing:
+        hit_or_stand = input("Hit or stand? Type 'h' or 's': ").lower()
+
+        if hit_or_stand == 'h':
+            player_draw()
+            if sum_of_player > 21:
+                keep_drawing = False
+                player_bust = True
+                game_continue = False
+                print("Bust. You lose.")
+            elif sum_of_player == 21:
+                keep_drawing = False
+                player_blackjack = True
+                print("You have a BlackJack!")
+        else:
+            keep_drawing = False
+
+        print(f"Your hand: {player_cards}\nPlayer Score {sum_of_player}")
+
+    if player_bust is True or player_blackjack is True:
+        game_continue = False
+
+    #3rd phase - cpu draws until >= 17 or busts
+    else:
+        keep_drawing = True 
+        print("")  
+        print("Dealer Draws...\n")
+        while keep_drawing:
+            if sum_of_cpu < 17:
+                cpu_draw()
+            elif sum_of_cpu == 21:
+                keep_drawing = False
+            elif sum_of_cpu > 21:
+                player_win = True
+                keep_drawing = False
+                # print("Dealer Bust. You Win")        
+            elif sum_of_cpu < 21:
+                keep_drawing = False
+
+            print(f"Dealer's hand: {cpu_cards}\nScore: {sum_of_cpu}")
+                
+
+        #4th phase - reveal cards and determine winner
+
+    compare()
+    
+    play_again = input("Would you like to play again? Type 'y' for yes and 'n' for no: ")
+
+    if play_again == 'n':
+        game_continue = False 
+        clear()
+    else:
+        game_continue = True
+        player_cards = []
+        sum_of_player = 0
+        cpu_cards = []
+        sum_of_cpu = 0 
+        clear()
+
