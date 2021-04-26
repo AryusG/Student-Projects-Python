@@ -1,0 +1,48 @@
+from art import logo
+import random
+
+def game():
+    print(logo)
+    print("Welcome to the Number Guessing Game!")
+    print("I'm thinking of a number between 1 - 100.")
+    random_number = random.randint(1, 100)
+    print(f"Psst the actual number is {random_number}")
+
+    attempts = 0
+    game_continue = True
+
+    difficulty = input("Choose difficulty. Type 'easy' or 'hard': ")
+
+    def difficulty_choice(easyorhard):
+        if easyorhard == 'easy':
+            return 10
+        if easyorhard == 'hard':
+            return 5
+
+    attempts = difficulty_choice(difficulty)
+    print(f"You have {attempts} attempts remaining.")
+
+    def attempts_left(guess, answer):
+        if guess > answer:
+            print("Too High.\n")
+            return attempts - 1
+        if guess < answer:
+            print("Too Low.\n")
+            return attempts - 1
+
+    while game_continue:
+        player_guess = int(input("\nMake a guess: "))         
+        attempts = attempts_left(player_guess, random_number)
+        
+        if player_guess == random_number:
+            print("You Win!")
+            game_continue = False
+            return
+
+        print(f"You have {attempts} attempts left.")
+
+        if attempts == 0:
+            game_continue = False
+        print("Ran out of attempts. You lose.")
+
+game()
