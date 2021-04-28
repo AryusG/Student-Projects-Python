@@ -1,0 +1,55 @@
+from art import logo, vs
+from game_data import data
+import random
+from replit import clear
+
+game_lose = False
+score = 0
+
+while not game_lose:
+    print(logo)
+
+    choice1 = random.choice(data)
+    choice2 = random.choice(data) 
+    
+    if score > 0:
+        print(f"Correct answer. Your score: {score}") 
+        
+    print(f"Compare A: {choice1['name']}, a {choice1['description']}, from {choice1['country']}")
+    print(vs)
+    print(f"Compare B: {choice2['name']}, a {choice2['description']}, from {choice2['country']}")
+
+    def which_highest():
+        '''Finds the highest follower count of the two choices: A or B'''
+        choice1_count = choice1['follower_count']
+        choice2_count = choice2['follower_count']
+        #print(choice1_count, choice2_count)
+        if choice1_count > choice2_count:
+            return 'a'
+        elif choice2_count > choice1_count:
+            return 'b'
+        else:
+            return ['a', 'b']
+
+    highest_answer = which_highest()
+    #print(highest_answer)
+    
+    def player_input(choice, answer):
+        '''Takes player input and calculate if correct or not compared to the answer'''
+        global game_lose   
+        if choice in highest_answer:
+            clear()
+            return score + 1
+        elif choice != answer:
+            clear()
+            print(logo)
+            print(f"Wrong Answer. Final score: {score}")
+            game_lose = True
+        
+
+
+    score = player_input(input("Who has more followers? Type 'A' or 'B': ").lower(), highest_answer)
+
+
+
+
