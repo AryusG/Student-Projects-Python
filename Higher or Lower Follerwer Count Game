@@ -9,15 +9,25 @@ score = 0
 while not game_lose:
     print(logo)
 
+    def format_data(choice):
+        '''Turns data into readable format'''
+        choice_name = choice['name']
+        choice_descr = choice['description']
+        choice_country = choice['country']
+
+        return f"{choice_name}, a {choice_descr}, from {choice_country}"
+    
     choice1 = random.choice(data)
     choice2 = random.choice(data) 
+    if choice1 == choice2:
+        choice2 = random.choice(data)
     
     if score > 0:
         print(f"Correct answer. Your score: {score}") 
         
-    print(f"Compare A: {choice1['name']}, a {choice1['description']}, from {choice1['country']}")
+    print(f"Compare A: {format_data(choice1)}")
     print(vs)
-    print(f"Compare B: {choice2['name']}, a {choice2['description']}, from {choice2['country']}")
+    print(f"Compare B: {format_data(choice2)}")
 
     def which_highest():
         '''Finds the highest follower count of the two choices: A or B'''
@@ -49,6 +59,8 @@ while not game_lose:
 
 
     score = player_input(input("Who has more followers? Type 'A' or 'B': ").lower(), highest_answer)
+
+
 
 
 
