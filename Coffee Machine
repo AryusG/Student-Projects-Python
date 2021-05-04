@@ -1,0 +1,135 @@
+from coffee_data import MENU, resources
+
+
+# Global Variables
+MACHINE_ON = True
+resource_ToF = True
+insufficient_list = []
+
+# Coins
+twentyCents = 0.20
+fiftyCents = 0.50
+oneDollar = 1.00
+twoDollars = 2.00
+user_change = 0.00
+
+
+# Prices of each drink
+espresso_price = MENU['espresso']['cost']
+latte_price = MENU['latte']['cost']
+cappuccino_price = MENU['cappuccino']['cost']
+
+# Resource Variables
+machine_water = resources['water']
+machine_milk = resources['milk']
+machine_coffee = resources['coffee']
+machine_money = resources['money']
+
+
+# Custom Functions
+def resources_check(drink_choice):
+    '''Check machine has enough resources to make chosen drink.
+    Sets resources_ToF to a Boolean.
+    if resources_ToF = False, appends insufficient resources to: insufficient_list []'''
+    global resource_ToF
+    drink_ingredients = MENU[drink_choice]['ingredients']
+
+    for item in drink_ingredients:
+        if resources[item] < drink_ingredients[item]:
+            insufficient_list.append(item)
+            resource_ToF = False
+
+
+def coins_check():
+    '''Checks if user has enough money and then returns a boolean'''
+    global user_change
+    print("\nInsert Coins:")
+    total_20_c = int(input("20c: "))
+    total_50_c = int(input("50c: "))
+    total_1_dollar = int(input("$1: "))
+    total_2_dollar = int(input("$2: "))
+
+    total_amount = (total_20_c * twentyCents) + (total_50_c * fiftyCents) + (total_1_dollar * oneDollar) + (total_2_dollar * twoDollars)
+    user_change = total_amount - MENU[user_input]['cost']
+
+    if total_amount < MENU[user_input]['cost']:
+        return False
+    else:
+        return True
+
+
+def make_coffee(coffee_type):
+    global machine_water, machine_milk, machine_coffee
+
+    if coffee_type == 'espresso':
+        machine_water -= MENU[coffee_type]['ingredients']['water']
+        machine_coffee -= MENU[coffee_type]['ingredients']['coffee']
+
+    else:
+        machine_water -= MENU[coffee_type]['ingredients']['water']
+        machine_milk -= MENU[coffee_type]['ingredients']['milk']
+        machine_coffee -= MENU[coffee_type]['ingredients']['coffee']
+
+
+# TODO (done) Make a while loop so this keeps happening
+while MACHINE_ON == True:
+    user_input = input(
+        f"Welcome to Darcy's Coffee! We have these drinks to choose from:"
+        "\n(Type 'admin' for admin privileges)"
+        f"\n  Espresso = ${espresso_price}"
+        f"\n  Latte = ${latte_price}"
+        f"\n  Cappuccino = ${cappuccino_price}"
+        f"\nWhich would you like?: ").lower()
+
+    # TODO (done) 'admin'
+    if user_input == 'admin':
+        print("List of Commands:\n"
+              "Turn off machine: 'off'\n"
+              "List remaining resources: 'report'\n")
+    # TODO (done) Make a turn off Button
+    if user_input == 'off':
+        MACHINE_ON = False
+
+    # TODO (done) Make a 'report' button which prints all current resources
+    if user_input == 'report':
+        print(f"\nRESOURCES:\n"
+              f"  Water: {machine_water}mL\n"
+              f"  Milk: {machine_milk}mL\n"
+              f"  Coffee: {machine_coffee}g")
+        print(f"  Money: $%.2f\n" % resources['money'])
+
+
+    # TODO  statement to decided what to do next
+    if user_input == 'espresso' or user_input == 'latte' or user_input == 'cappuccino':
+        resources_check(user_input)
+
+        # TODO def resources_check() When user chooses drink, check resources to make drink
+        # print(insufficient_list)
+        # print(resource_ToF)
+        # print(len(insufficient_list))
+        if resource_ToF == False:
+            if len(insufficient_list) == 1:
+                print(f"Sorry there is not enough {insufficient_list[0]}.")
+            elif len(insufficient_list) == 2:
+                print(f"Sorry there is not enough {insufficient_list[0]} and {insufficient_list[1]}.")
+            else:
+                print(f"Sorry there is not enough {insufficient_list[0]}, {insufficient_list[1]} "
+                      f"and {insufficient_list[2]}.")
+
+        # TODO insert coins: if resource_ToF returns True, then prompt input("Insert coins")
+        # TODO def coins_check(): if inserted coins are sufficient enough
+        if resource_ToF == True:
+            enough_coins = coins_check()
+
+            if enough_coins == False:
+                print("Sorry that's not enough money. Money refunded.\n")
+
+            elif enough_coins == True:
+                resources['money'] += MENU[user_input]['cost']
+                print(f"Here is your change of $%.2f" % user_change)
+                make_coffee(user_input)
+                # TODO 8 def make_coffee(): coffee resources should be deducted from machine resources + profit
+                print(f"Here is your {user_input} ☕.\n")
+
+    else:
+        print("Input Error. Try again.\n")
